@@ -2,27 +2,40 @@ import chainlit as cl
 import openai
 import os
 import base64
+from dotenv import load_dotenv
 
-api_key = os.getenv("OPENAI_API_KEY")
-# api_key = os.getenv("RUNPOD_API_KEY")
-# runpod_serverless_id = os.getenv("RUNPOD_SERVERLESS_ID")
+# Load environment variables
+load_dotenv()
 
-endpoint_url = "https://api.openai.com/v1"
-# endpoint_url = f"https://api.runpod.ai/v2/{runpod_serverless_id}/openai/v1"
-client = openai.AsyncClient(api_key=api_key, base_url=endpoint_url)
+configurations = {
+    "mistral_7B": {
+        "endpoint_url": os.getenv("MISTRAL_7B_ENDPOINT"),
+        "api_key": os.getenv("RUNPOD_API_KEY"),
+        "model": "mistralai/Mistral-7B-v0.1"
+    },
+    "openai_gpt-4": {
+        "endpoint_url": os.getenv("OPENAI_ENDPOINT"),
+        "api_key": os.getenv("OPENAI_API_KEY"),
+        "model": "gpt-4"
+    }
+}
+
+# Choose configuration
+config_key = "openai_gpt-4"
+#config_key = "mistral_7B"
+
+# Get selected configuration
+config = configurations[config_key]
+
+# Initialize the OpenAI async client
+client = openai.AsyncClient(api_key=config["api_key"], base_url=config["endpoint_url"])
 
 # https://platform.openai.com/docs/models/gpt-4o
 model_kwargs = {
-   "model": "chatgpt-4o-latest",
+   "model": config["model"],
    "temperature": 0.3,
    "max_tokens": 500
 }
-
-# model_kwargs = {
-#     "model": "mistralai/Mistral-7B-Instruct-v0.3",
-#     "temperature": 0.3,
-#     "max_tokens": 500
-# }
 
 @cl.on_message
 async def on_message(message: cl.Message):
