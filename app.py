@@ -8,29 +8,10 @@ from langsmith import traceable
 from langsmith.wrappers import wrap_openai
 
 from prompts import SYSTEM_PROMPT
+from config import config
 
 # Load environment variables
 load_dotenv()
-
-configurations = {
-    "mistral_7B": {
-        "endpoint_url": os.getenv("MISTRAL_7B_ENDPOINT"),
-        "api_key": os.getenv("RUNPOD_API_KEY"),
-        "model": "mistralai/Mistral-7B-v0.1"
-    },
-    "openai_gpt-4": {
-        "endpoint_url": os.getenv("OPENAI_ENDPOINT"),
-        "api_key": os.getenv("OPENAI_API_KEY"),
-        "model": "gpt-4"
-    }
-}
-
-# Choose configuration
-config_key = "openai_gpt-4"
-#config_key = "mistral_7B"
-
-# Get selected configuration
-config = configurations[config_key]
 
 # Initialize the OpenAI async client
 client = wrap_openai(openai.AsyncClient(api_key=config["api_key"], base_url=config["endpoint_url"]))
