@@ -63,3 +63,39 @@ questions_with_followups_edge_cases = [
         "How do these ratings compare across different geographical regions?"
     ]
 ]
+
+evaluation_questions_laptops = [
+    [
+        "Can you give a quick summary of the top three laptops currently recommended for general use?",
+        "What makes these laptops stand out from others in their category?",
+        "Are there any notable drawbacks for each of these laptops?"
+    ],
+    [
+        "Which laptops are considered the best for gaming, and why?",
+        "What specific hardware features contribute to their gaming performance?",
+        "How do these laptops handle multitasking and high-performance tasks?"
+    ],
+    [
+        "What are the top laptops for someone who needs a highly portable device?",
+        "How do these laptops compare in terms of weight and battery life?",
+        "Are there any features that enhance portability, such as build quality or compact design?"
+    ],
+    [
+        "Can you recommend laptops with the best display quality for graphic design or media consumption?",
+        "What display specifications are most important for these uses?",
+        "How do these laptops perform in terms of color accuracy and brightness?"
+    ],
+    [
+        "Which laptops are known for their superior build quality and durability?",
+        "What materials or design features contribute to their durability?",
+        "Are there any common issues reported with the build quality of these laptops?"
+    ],
+    [
+        "Are there any laptops with unique features that make them stand out in the market?",
+        "How do these unique features impact the overall user experience?"
+    ],
+    [
+        "Which laptops offer the best integration with other devices and ecosystems?",
+        "What are the benefits of this integration?"
+    ]
+]

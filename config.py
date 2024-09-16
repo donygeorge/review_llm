@@ -9,7 +9,7 @@ configurations = {
     "openai_gpt-4": {
         "endpoint_url": os.getenv("OPENAI_ENDPOINT"),
         "api_key": os.getenv("OPENAI_API_KEY"),
-        "model": "gpt-4"
+        "model": "gpt-4o-mini"
     }
 }
 
@@ -24,5 +24,23 @@ config = configurations[config_key]
 model_kwargs = {
    "model": config["model"],
    "temperature": 0.3,
-   "max_tokens": 500
+   "max_tokens": 2000
 }
+
+category_key = "laptops"
+
+category_websites = {
+    "projectors" : [
+        "https://www.pcmag.com/picks/the-best-projectors",
+        "https://www.nytimes.com/wirecutter/reviews/best-projectors/"
+    ],     
+    "laptops" : [
+        "https://www.pcmag.com/picks/the-best-laptops",
+        "https://www.nytimes.com/wirecutter/reviews/best-laptops/", 
+        "https://www.tomsguide.com/best-picks/best-laptops"
+    ],
+    "smart_home" : [
+        "https://www.pcmag.com/picks/the-best-smart-home-devices"
+    ]
+}
+
