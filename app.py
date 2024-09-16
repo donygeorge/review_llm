@@ -4,6 +4,9 @@ import os
 import base64
 from dotenv import load_dotenv
 
+from langsmith import traceable
+from langsmith.wrappers import wrap_openai
+
 from prompts import SYSTEM_PROMPT
 
 # Load environment variables
@@ -30,7 +33,7 @@ config_key = "openai_gpt-4"
 config = configurations[config_key]
 
 # Initialize the OpenAI async client
-client = openai.AsyncClient(api_key=config["api_key"], base_url=config["endpoint_url"])
+client = wrap_openai(openai.AsyncClient(api_key=config["api_key"], base_url=config["endpoint_url"]))
 
 # https://platform.openai.com/docs/models/gpt-4o
 model_kwargs = {
@@ -42,6 +45,7 @@ model_kwargs = {
 # Configuration setting to enable or disable the system prompt
 ENABLE_SYSTEM_PROMPT = True
 
+@traceable
 @cl.on_message
 async def on_message(message: cl.Message):
 
