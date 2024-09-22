@@ -16,11 +16,15 @@ def parse_articles(website):
     print("Parsing:" + website)
     return full_text
 
-def get_system_prompt_category():
+def get_parsed_articles():
     websites = category_websites[category_key]
     parsed_articles = ""
     for website in websites:
         parsed_article = parse_articles(website)
         if parsed_article:
             parsed_articles += parsed_article + "\n\n"
-    return SYSTEM_PROMPT_WEBSITE.format(parsed_articles=parsed_articles)
+    return parsed_articles
+
+
+def get_system_prompt_category():
+    return SYSTEM_PROMPT_WEBSITE.format(parsed_articles=get_parsed_articles())

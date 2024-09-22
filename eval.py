@@ -4,13 +4,15 @@ from langsmith.evaluation import evaluate, LangChainStringEvaluator
 from langsmith.schemas import Run, Example
 import openai
 import json
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv
 load_dotenv()
 
 from config import config, model_kwargs
 from prompts import EVALUATION_PROMPT
-
+from helper import get_parsed_articles
 
 client = wrap_openai(openai.AsyncClient(api_key=config["api_key"], base_url=config["endpoint_url"]))
 
@@ -20,15 +22,9 @@ def prompt_compliance_evaluator(run: Run, example: Example) -> dict:
     outputs = example.outputs['output']
 
     # Add print statements to explore inputs and outputs
-
+    # print("Inputs:", inputs)
     # print("Outputs:", outputs)
 
-    return {
-        "key": "prompt_compliance",
-        "score": 0,  # Normalize to 0-1 range
-        "reason": "None"
-    }
-    
     # Extract system prompt
     system_prompt = next((msg['data']['content'] for msg in inputs if msg['type'] == 'system'), "")
 
@@ -45,8 +41,12 @@ def prompt_compliance_evaluator(run: Run, example: Example) -> dict:
     latest_message = message_history[-1]['content'] if message_history else ""
     model_output = outputs['data']['content']
 
+    # print("--> Message History -->", message_history)
+    # print("--> Latest Message -->", latest_message)
+    # print("--> Model Output -->", model_output) 
+
     evaluation_data = f"""
-    System Prompt: {system_prompt}
+    Original Content: {get_parsed_articles()}
 
     Message History:
     {json.dumps(message_history, indent=2)}
@@ -55,6 +55,8 @@ def prompt_compliance_evaluator(run: Run, example: Example) -> dict:
 
     Model Output: {model_output}
     """
+    
+    # print("--> Evaluation Data -->", evaluation_data)
 
     response = client.chat.completions.create(
         model="gpt-4o",
@@ -66,12 +68,17 @@ def prompt_compliance_evaluator(run: Run, example: Example) -> dict:
     )
 
     try:
-        result = json.loads(response.choices[0].message.content)
-        print("Result:", result)
+        print("Response", response.dict()["choices"][0]["message"]["content"])
+        # result = json.loads(response.choices[0].message.content)
+        # return {
+        #     "key": "prompt_compliance",
+        #     "score": result["accuracy_score"] / 5,  # Normalize to 0-1 range
+        #     "reason": result["accuracy_rationale"]
+        # }
         return {
             "key": "prompt_compliance",
-            "score": result["accuracy_score"] / 5,  # Normalize to 0-1 range
-            "reason": result["accuracy_rationale"]
+            "score": 0,
+            "reason": "Incomplete evaluation"
         }
     except json.JSONDecodeError:
         print("Result: exception!!!")
@@ -92,12 +99,14 @@ evaluators = [
     prompt_compliance_evaluator
 ]
 
-# Evaluate the target task
-results = evaluate(
-    lambda inputs: inputs,
-    data=data,
-    evaluators=evaluators,
-    experiment_prefix=experiment_prefix,
-)
+def run_evaluation():
+    results = evaluate(
+        lambda inputs: inputs,
+        data=data,
+        evaluators=evaluators,
+        experiment_prefix=experiment_prefix,
+    )
+    print(results)
 
-print(results)
+if __name__ == "__main__":
+    run_evaluation()

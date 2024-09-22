@@ -2,13 +2,11 @@ import chainlit as cl
 import openai
 import os
 import base64
-import requests
 from dotenv import load_dotenv
 
 from langsmith import traceable
 from langsmith.wrappers import wrap_openai
 
-from prompts import SYSTEM_PROMPT, SYSTEM_PROMPT_WEBSITE
 from config import config, model_kwargs, category_websites, category_key
 from helper import get_system_prompt_category
 
